@@ -19,7 +19,7 @@ export function WatchlistList({ movies }: { movies: Movie[] }) {
           : null;
         
         return (
-          <div key={movie.id} className="flex gap-4 border p-3 rounded-lg">
+          <div key={movie.id} className="flex flex-col md:flex-row gap-4 border p-3 rounded-lg">
             {movie.poster_path && (
               <div className="relative h-[120px] w-[80px] overflow-hidden rounded">
                 <Image
@@ -40,7 +40,7 @@ export function WatchlistList({ movies }: { movies: Movie[] }) {
                   : "Brak danych"}
               </p>
             </div>
-            <div className="self-center mr-5">
+            <div className="self-center ml-auto text-right flex-shrink-0 pl-2">
               {movie.release_date &&
                 daysUntilRelease !== null &&
                 (daysUntilRelease > 0 ? (
