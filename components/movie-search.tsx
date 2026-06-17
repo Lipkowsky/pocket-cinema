@@ -82,10 +82,10 @@ export function MovieSearch({ watchlist }: MovieSearchProps) {
               <CommandItem
                 key={movie.id}
                 value={`${movie.id}-${movie.title}`}
-                className="flex items-center gap-3"
+                className="flex items-center gap-3 w-full min-w-0"
               >
                 {movie.poster_path && (
-                  <div className="relative h-[40px] w-[30px] overflow-hidden rounded">
+                  <div className="relative h-[40px] w-[30px] flex-shrink-0 overflow-hidden rounded">
                     <Image
                       src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
                       alt={movie.title}
@@ -95,8 +95,8 @@ export function MovieSearch({ watchlist }: MovieSearchProps) {
                   </div>
                 )}
 
-                <div className="flex flex-col">
-                  <span className="font-medium">{movie.title}</span>
+                <div className="flex flex-col min-w-0">
+                  <span className="font-medium break-words">{movie.title}</span>
                   <span className="text-xs text-muted-foreground">
                     {movie.release_date
                       ? formatDate(movie.release_date)
@@ -106,7 +106,7 @@ export function MovieSearch({ watchlist }: MovieSearchProps) {
 
                 <Button
                   size="sm"
-                  className="ml-auto"
+                  className="ml-auto flex-shrink-0"
                   disabled={isInWatchlist}
                   onClick={() => {
                     if (!isInWatchlist) {
