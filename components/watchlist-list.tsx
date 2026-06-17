@@ -19,7 +19,7 @@ export function WatchlistList({ movies }: { movies: Movie[] }) {
           : null;
         
         return (
-          <div key={movie.id} className="flex flex-col md:flex-row gap-4 border p-3 rounded-lg">
+          <div key={movie.id} className="flex flex-col items-center md:flex-row gap-4 border p-3 rounded-lg">
             {movie.poster_path && (
               <div className="relative h-[120px] w-[80px] overflow-hidden rounded">
                 <Image
