@@ -53,10 +53,32 @@ export async function getUserWatchlist(): Promise<WatchlistItem[]> {
   }
 
   const { data, error } = await supabase
-    .from("watchlist")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("release_date", { ascending: false });
+  .from("watchlist")
+  .select("*")
+  .eq("user_id", user.id);
+
+if (data) {
+  const today = new Date();
+
+  data.sort((a, b) => {
+    const aDate = new Date(a.release_date);
+    const bDate = new Date(b.release_date);
+
+    const aExpired =
+      today.getTime() - aDate.getTime() > 10 * 24 * 60 * 60 * 1000;
+
+    const bExpired =
+      today.getTime() - bDate.getTime() > 10 * 24 * 60 * 60 * 1000;
+
+  
+    if (aExpired !== bExpired) {
+      return aExpired ? 1 : -1;
+    }
+
+  
+    return aDate.getTime() - bDate.getTime();
+  });
+}
 
   if (error) throw error;
 
