@@ -53,34 +53,52 @@ export async function getUserWatchlist(): Promise<WatchlistItem[]> {
   }
 
   const { data, error } = await supabase
-  .from("watchlist")
-  .select("*")
-  .eq("user_id", user.id);
+    .from("watchlist")
+    .select("*")
+    .eq("user_id", user.id);
 
-if (data) {
-  const today = new Date();
+  if (data) {
+    data.sort((a, b) => {
+      const today = new Date();
 
-  data.sort((a, b) => {
-    const aDate = new Date(a.release_date);
-    const bDate = new Date(b.release_date);
+      const aDate = new Date(a.release_date);
+      const bDate = new Date(b.release_date);
 
-    const aExpired =
-      today.getTime() - aDate.getTime() > 10 * 24 * 60 * 60 * 1000;
+      const ms10days = 10 * 24 * 60 * 60 * 1000;
 
-    const bExpired =
-      today.getTime() - bDate.getTime() > 10 * 24 * 60 * 60 * 1000;
+      const aExpired = today.getTime() - aDate.getTime() > ms10days;
+      const bExpired = today.getTime() - bDate.getTime() > ms10days;
 
-  
-    if (aExpired !== bExpired) {
-      return aExpired ? 1 : -1;
-    }
+      if (aExpired !== bExpired) {
+        return aExpired ? 1 : -1;
+      }
 
-  
-    return aDate.getTime() - bDate.getTime();
-  });
-}
+      const aDistance = Math.abs(today.getTime() - aDate.getTime());
+      const bDistance = Math.abs(today.getTime() - bDate.getTime());
+
+      return aDistance - bDistance;
+    });
+  }
 
   if (error) throw error;
 
   return data as WatchlistItem[];
+}
+
+export async function removeFromWatchlist(id: string) {
+  const supabase = await createClient();
+  console.log(id);
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("Unauthorized");
+
+  const { error } = await supabase.from("watchlist").delete().eq("id", id);
+
+  if (error) throw error;
+
+  revalidatePath("/watchlist");
+  return { success: true };
 }
